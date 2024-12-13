@@ -122,7 +122,7 @@ extern int yylex();
 extern char *yytext;
 
 void yyerror(const char *s);
-extern double x,y,z;
+extern double x,y,z,xMin,yMin,xMax,yMax;
 extern int dg;
 extern void setOnOff(int value);
 
@@ -382,7 +382,7 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  5
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   51
+#define YYLAST   56
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  22
@@ -391,7 +391,7 @@ union yyalloc
 /* YYNRULES -- Number of rules.  */
 #define YYNRULES  15
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  41
+#define YYNSTATES  45
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
@@ -450,8 +450,8 @@ static const yytype_int8 yyrhs[] =
        1,    -1,    25,    -1,    24,    25,    -1,     5,    14,    20,
       -1,     6,    20,    -1,     7,    20,    -1,     8,    20,    -1,
        9,    20,    -1,    10,    20,    -1,    11,    20,    -1,    12,
-      16,    16,    16,    15,    15,    21,    20,    -1,    13,    20,
-      -1
+      16,    16,    16,    15,    15,    21,    20,    -1,    13,    16,
+      16,    16,    16,    20,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
@@ -496,7 +496,7 @@ static const yytype_uint8 yyr1[] =
 static const yytype_uint8 yyr2[] =
 {
        0,     2,     8,     7,     1,     1,     2,     3,     2,     2,
-       2,     2,     2,     2,     8,     2
+       2,     2,     2,     2,     8,     6
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -506,9 +506,9 @@ static const yytype_uint8 yydefact[] =
 {
        0,     4,     0,     0,     0,     1,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       5,     0,     8,     9,    10,    11,    12,    13,     0,    15,
-       3,     0,     6,     7,     0,     2,     0,     0,     0,     0,
-      14
+       5,     0,     8,     9,    10,    11,    12,    13,     0,     0,
+       3,     0,     6,     7,     0,     0,     2,     0,     0,     0,
+       0,     0,    15,     0,    14
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
@@ -523,16 +523,16 @@ static const yytype_int8 yydefgoto[] =
 static const yytype_int8 yypact[] =
 {
        8,    -8,    -7,    12,    -1,    -8,     6,     7,    -5,    11,
-      13,    14,    15,    16,    17,    18,    23,    20,    24,    10,
-      -8,    21,    -8,    -8,    -8,    -8,    -8,    -8,    26,    -8,
-      -8,    27,    -8,    -8,    28,    -8,    30,    31,     9,    29,
-      -8
+      13,    14,    15,    16,    17,    18,    23,    24,    26,    10,
+      -8,    21,    -8,    -8,    -8,    -8,    -8,    -8,    27,    28,
+      -8,    38,    -8,    -8,    29,    30,    -8,    32,    33,    35,
+      31,    34,    -8,    36,    -8
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -8,    -8,    -8,    32
+      -8,    -8,    -8,     9
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -544,20 +544,20 @@ static const yytype_uint8 yytable[] =
 {
        9,    10,    11,    12,    13,    14,    15,    16,    17,     1,
        4,     2,     5,     6,    18,     9,    10,    11,    12,    13,
-      14,    15,    16,    17,     7,    21,     8,     0,    30,    31,
-      39,    35,     0,    22,    23,    24,    25,    26,    27,    28,
-      29,    33,    34,     0,    36,    37,    38,     0,     0,    40,
-       0,    32
+      14,    15,    16,    17,     7,    21,     8,     0,    32,    31,
+      30,     0,     0,    22,    23,    24,    25,    26,    27,    28,
+      29,    33,    36,    34,    35,    37,    38,    39,     0,    40,
+      41,    42,     0,     0,     0,    43,    44
 };
 
 static const yytype_int8 yycheck[] =
 {
        5,     6,     7,     8,     9,    10,    11,    12,    13,     1,
       17,     3,     0,    14,    19,     5,     6,     7,     8,     9,
-      10,    11,    12,    13,    18,    14,    19,    -1,     4,    19,
-      21,     4,    -1,    20,    20,    20,    20,    20,    20,    16,
-      20,    20,    16,    -1,    16,    15,    15,    -1,    -1,    20,
-      -1,    19
+      10,    11,    12,    13,    18,    14,    19,    -1,    19,    19,
+       4,    -1,    -1,    20,    20,    20,    20,    20,    20,    16,
+      16,    20,     4,    16,    16,    16,    16,    15,    -1,    16,
+      15,    20,    -1,    -1,    -1,    21,    20
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -566,9 +566,9 @@ static const yytype_uint8 yystos[] =
 {
        0,     1,     3,    23,    17,     0,    14,    18,    19,     5,
        6,     7,     8,     9,    10,    11,    12,    13,    19,    24,
-      25,    14,    20,    20,    20,    20,    20,    20,    16,    20,
-       4,    19,    25,    20,    16,     4,    16,    15,    15,    21,
-      20
+      25,    14,    20,    20,    20,    20,    20,    20,    16,    16,
+       4,    19,    25,    20,    16,    16,     4,    16,    16,    15,
+      16,    15,    20,    21,    20
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1404,15 +1404,23 @@ yyreduce:
   case 14:
 #line 53 "tp3.y"
     {
-            printf("\n### SETSHIP: %s  x:%f, y:%f, z:%f, DG:%d Status:%d \n", (yyvsp[(1) - (8)].id),(yyvsp[(2) - (8)].numDou),(yyvsp[(3) - (8)].numDou),(yyvsp[(4) - (8)].numDou),(yyvsp[(5) - (8)].numInt),(yyvsp[(6) - (8)].numInt)); 
+            printf("\n### SETSHIP: %s  x:%lf, y:%lf, z:%lf, DG:%d Status:%d \n", (yyvsp[(1) - (8)].id),(yyvsp[(2) - (8)].numDou),(yyvsp[(3) - (8)].numDou),(yyvsp[(4) - (8)].numDou),(yyvsp[(5) - (8)].numInt),(yyvsp[(6) - (8)].numInt)); 
             x=(yyvsp[(2) - (8)].numDou); y=(yyvsp[(3) - (8)].numDou); z=(yyvsp[(4) - (8)].numDou); dg=(yyvsp[(5) - (8)].numInt); 
             setOnOff((yyvsp[(6) - (8)].numInt));
             ;}
     break;
 
+  case 15:
+#line 58 "tp3.y"
+    {
+            printf("\n### SETSPACE: %s  xMin:%lf, yMin:%lf, xMax:%lf, yMax:%lf\n", (yyvsp[(1) - (6)].id),(yyvsp[(2) - (6)].numDou),(yyvsp[(3) - (6)].numDou),(yyvsp[(4) - (6)].numDou),(yyvsp[(5) - (6)].numDou)); 
+            xMin=(yyvsp[(2) - (6)].numDou); yMin=(yyvsp[(3) - (6)].numDou); xMax=(yyvsp[(4) - (6)].numDou); yMax=(yyvsp[(5) - (6)].numDou);
+    ;}
+    break;
+
 
 /* Line 1267 of yacc.c.  */
-#line 1416 "tp3.tab.c"
+#line 1424 "tp3.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1626,7 +1634,7 @@ yyreturn:
 }
 
 
-#line 61 "tp3.y"
+#line 64 "tp3.y"
 
 
 void yyerror(const char *s) {

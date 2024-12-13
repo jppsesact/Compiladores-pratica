@@ -30,8 +30,8 @@
   const int DECIMAL = 6;
   /* Posicao inicial da nave */
   double x = 0.0f, y = 0.0f, z = 0.0f;
-  double xMin =0.0f, yMin, zMin;
-  double xMax, yMax ,zMax;
+  double xMin = 0.0f, yMin = 0.0f;
+  double xMax = 0.0f, yMax = 0.0f;
   /* Estado inicial da nave */
   bool on = false, landed = true, turn = false, move = false, fly = false;
   /* Info instrucoes ID, DIR, DG, NR1, NR2 */
@@ -239,10 +239,7 @@ ON          [01]
                                           // Validar se é recebido um valor de <Fly--NR2> que origine um movimento da nave para valores negativos de zz.
                                           if (z + nr2 < 0) {
                                             printf("-- WARNING: Comando inválido! O valor %d origina um movimento para um valor negativo de zz (%f).\n", nr2, z + nr2);
-                                          } else if (z + nr2 > zMax) {
-                                            printf("-- WARNING: Comando inválido! O valor %d origina um movimento fora do seu espaço máximo de zz (%f).\n", nr2, zMax);
-                                          }
-                                          else {
+                                          } else {
                                             z += nr2;
                                             printf("move(%lf, %lf, %lf)\n", x, y, z);
                                           }
@@ -265,26 +262,22 @@ ON          [01]
                     }
 <SET_SHIP_2,SET_SHIP_3,SET_SHIP_4,SET_SHIP_5>"--"        { ; }
 <SET_SHIP_2>{NR2}   { 
-                        BEGIN(SET_SHIP_3);
-                        y = atof(yytext); 
-                        yylval.numDou = y;
+                        BEGIN(SET_SHIP_3);                        
+                        yylval.numDou = atof(yytext); 
                         return DOUBLE;
                     }
 <SET_SHIP_3>{NR2}   { 
                         BEGIN(SET_SHIP_4);
-                        z = atof(yytext); 
                         yylval.numDou = atof(yytext);
                         return DOUBLE;                     
                     }
 <SET_SHIP_4>{DG}    {
                         BEGIN(SET_SHIP_5); 
-                        dg = atoi(yytext);
-                        yylval.numInt = dg;
+                        yylval.numInt = atoi(yytext);
                         return INT;
                     }
-<SET_SHIP_5>{ON}    {   int ship_on = atoi(yytext); 
-                        setOnOff(ship_on);                        
-                        yylval.numInt = ship_on;
+<SET_SHIP_5>{ON}    {   
+                        yylval.numInt = atoi(yytext); 
                         return INT;}
 <SET_SHIP_5>">"     {
                         printf("    X: %lf, Y: %lf, Z: %lf, DG: %d, ON: %d\n", x, y, z, dg, on);
@@ -298,33 +291,32 @@ ON          [01]
 "<Set-Space--"       { BEGIN(SET_SPACE_1); }
 <SET_SPACE_1>{NR2}   { 
                         BEGIN(SET_SPACE_2);
-                        xMin = atof(yytext); 
+                        yylval.numDou = atof(yytext);
+                        return DOUBLE;                                                
                     }
 
-<SET_SPACE_2,SET_SPACE_3,SET_SPACE_4,SET_SPACE_5,SET_SPACE_6>"--"        { ; }
+<SET_SPACE_2,SET_SPACE_3,SET_SPACE_4>"--"        { ; }
 <SET_SPACE_2>{NR2}   { 
                         BEGIN(SET_SPACE_3);
-                        yMin = atof(yytext); 
+                        //yMin = atof(yytext); 
+                        yylval.numDou = atof(yytext);                        
+                        return DOUBLE;
                     }
 <SET_SPACE_3>{NR2}   { 
                         BEGIN(SET_SPACE_4);
-                        zMin = atof(yytext); 
+                        yylval.numDou = atof(yytext);                        
+                        //zMin = atof(yytext); 
+                        return DOUBLE;
                     }
 <SET_SPACE_4>{NR2}    {
-                        BEGIN(SET_SPACE_5); 
-                        xMax = atof(yytext); 
+                        yylval.numDou = atof(yytext);                        
+                        //yMax = atof(yytext); 
+                        return DOUBLE;
                     }
-<SET_SPACE_5>{NR2}    {
-                        BEGIN(SET_SPACE_6); 
-                        yMax = atof(yytext); 
-                    }
-<SET_SPACE_6>{NR2}    {
-                        zMax = atof(yytext); 
-                    }                    
-<SET_SPACE_6>">"     {
-              printf("    xMin: %lf, yMin: %lf, zMin: %lf, xMax: %lf, yMax: %lf, zMax:%lf\n",
-                     xMin, yMin, zMin, xMax, yMax, zMax);
-                    if (xMax<=xMin || yMax<=yMin || zMax<=zMin) {
+<SET_SPACE_4>">"     {
+                    printf("    xMin: %lf, yMin: %lf, xMax: %lf, yMax: %lf \n",
+                     xMin, yMin, xMax, yMax);
+                    if (xMax<=xMin || yMax<=yMin) {
                       printf("-- ERROR: Espaço inválido ou inexistente\n");
                       exit(-1);
                     }

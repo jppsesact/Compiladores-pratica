@@ -7,7 +7,7 @@ extern int yylex();
 extern char *yytext;
 
 void yyerror(const char *s);
-extern double x,y,z;
+extern double x,y,z,xMin,yMin,xMax,yMax;
 extern int dg;
 extern void setOnOff(int value);
 %}
@@ -24,7 +24,7 @@ extern void setOnOff(int value);
 %token <numDou> DOUBLE
 %token LPAREN RPAREN COLON SEMICOLON GREATER
 %start instrucoes
-%type <id> SETSHIP
+%type <id> SETSHIP SETSPACE
 %%
 
 instrucoes:
@@ -51,11 +51,14 @@ instrucao:
     | MOVE SEMICOLON
     | FLY SEMICOLON
     | SETSHIP DOUBLE DOUBLE DOUBLE INT INT GREATER SEMICOLON {
-            printf("\n### SETSHIP: %s  x:%f, y:%f, z:%f, DG:%d Status:%d \n", $1,$2,$3,$4,$5,$6); 
+            printf("\n### SETSHIP: %s  x:%lf, y:%lf, z:%lf, DG:%d Status:%d \n", $1,$2,$3,$4,$5,$6); 
             x=$2; y=$3; z=$4; dg=$5; 
             setOnOff($6);
             }
-    | SETSPACE SEMICOLON 
+    | SETSPACE DOUBLE DOUBLE DOUBLE DOUBLE SEMICOLON {
+            printf("\n### SETSPACE: %s  xMin:%lf, yMin:%lf, xMax:%lf, yMax:%lf\n", $1,$2,$3,$4,$5); 
+            xMin=$2; yMin=$3; xMax=$4; yMax=$5;
+    }
     ;
 ;
 %%

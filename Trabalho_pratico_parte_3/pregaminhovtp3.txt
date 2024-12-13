@@ -1,4 +1,5 @@
 START (AG369):
 <Set-Ship--3--4--5--90--1>;
+<Set-Space--2--2--4--4>;
 <Move--50>;
 :END
