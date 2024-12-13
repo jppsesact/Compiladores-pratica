@@ -1,0 +1,13 @@
+<On--AG36>
+<On--GG36>
+<Turn--R--360>
+<Turn--R---450>
+<Turn--R--0>
+<Turn--R--20>
+<Turn--R--45>
+<Turn--L--90>
+<Fly--0>
+<Fly---0>
+<Take-Off>
+<Fly---100>
+<Turn--L--359>
