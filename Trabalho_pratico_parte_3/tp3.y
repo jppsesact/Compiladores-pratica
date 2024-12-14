@@ -43,7 +43,7 @@ lista_instrucoes:
     ;
 ;
 instrucao:    
-    ON ID SEMICOLON
+    ON SEMICOLON
     | OFF SEMICOLON
     | TAKEOFF SEMICOLON
     | LAND SEMICOLON
@@ -55,9 +55,13 @@ instrucao:
             x=$2; y=$3; z=$4; dg=$5; 
             setOnOff($6);
             }
-    | SETSPACE DOUBLE DOUBLE DOUBLE DOUBLE SEMICOLON {
-            printf("\n### SETSPACE: %s  xMin:%lf, yMin:%lf, xMax:%lf, yMax:%lf\n", $1,$2,$3,$4,$5); 
+    | SETSPACE DOUBLE DOUBLE DOUBLE DOUBLE GREATER SEMICOLON {
+            printf("\n### SETSPACE: xMin:%lf, yMin:%lf, xMax:%lf, yMax:%lf\n", $2,$3,$4,$5); 
             xMin=$2; yMin=$3; xMax=$4; yMax=$5;
+            if (xMax<=xMin || yMax<=yMin) {
+                printf("-- ERROR: Espaço inválido ou inexistente\n");
+                exit(-1);
+            }
     }
     ;
 ;

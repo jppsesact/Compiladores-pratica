@@ -13,7 +13,7 @@ START (oi98) :
 START (AS543) :
 <Turn--R--90>
 <Move--50>
-<Set-Ship--0--0--0--5>;
+<Set-Ship--0--0--0--5>
 : END
 
 START (EE123) :

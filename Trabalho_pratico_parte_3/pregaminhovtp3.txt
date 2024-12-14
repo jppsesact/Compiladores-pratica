@@ -1,5 +1,14 @@
 START (AG369):
 <Set-Ship--3--4--5--90--1>;
-<Set-Space--2--2--4--4>;
+<Set-Space---500---500--500--500>;
+<Turn--R--90>;
+<On--AG369>;
 <Move--50>;
+<Take-Off>;
+<Fly--50>;
+<Turn--L--90>;
+<Move--10>;
+<Fly---55>;
+<Land>;
+<Off>;
 :END

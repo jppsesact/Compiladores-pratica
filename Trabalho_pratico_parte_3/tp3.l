@@ -56,6 +56,7 @@ DIR     [LR]
 DG      [1-9]|[1-9][0-9]|[12][0-9][0-9]|3[0-5][0-9]
 NR1     [1-9][0-9]*
 NR2     -?[1-9][0-9]*
+NR3     -?[1-9][0-9]*|0
 BNR     -?[0-9]+
 
 
@@ -195,20 +196,26 @@ ON          [01]
 <COMMAND_MOVE>">"                 {
                                     if(move) {
                                       // Validation check
+                                      float dx = nr1 * getRoundedValue(sin(getRadians(orientation)), DECIMAL);
+                                      float dy = nr1 * getRoundedValue(cos(getRadians(orientation)), DECIMAL);
                                       if(on) {
-                                        printf("-- DEBUG: <Move--%d>, Orientação da Nave = %f\n", nr1, orientation);
-                                        //
-                                        // Set x
-                                        //printf("-- DEBUG: old x = %f, nr1 = %d, sin(%fº) = %f\n", x, nr1, orientation, sin(getRadians(orientation)));
-                                        x += nr1 * getRoundedValue(sin(getRadians(orientation)), DECIMAL);
-                                        //printf("-- DEBUG: new x = %f\n", x);
-                                        //
-                                        // Set y
-                                        //printf("-- DEBUG: old y = %f, nr1 = %d, cos(%fº) = %f\n", y, nr1, orientation, cos(getRadians(orientation)));
-                                        y += nr1 * getRoundedValue(cos(getRadians(orientation)), DECIMAL);
-                                        //printf("-- DEBUG: new y = %f\n", y);
-                                        //
-                                        printf("move(%lf, %lf, %lf)\n", x, y, z);
+                                        if (x+dx >= xMin && x+dx <= xMax && y+dy >= yMin && y+dy <= yMax) {
+                                          printf("-- DEBUG: <Move--%d>, Orientação da Nave = %f\n", nr1, orientation);
+                                          //
+                                          // Set x
+                                          //printf("-- DEBUG: old x = %f, nr1 = %d, sin(%fº) = %f\n", x, nr1, orientation, sin(getRadians(orientation)));
+                                          x += dx;
+                                          //printf("-- DEBUG: new x = %f\n", x);
+                                          //
+                                          // Set y
+                                          //printf("-- DEBUG: old y = %f, nr1 = %d, cos(%fº) = %f\n", y, nr1, orientation, cos(getRadians(orientation)));
+                                          y += dy;
+                                          //printf("-- DEBUG: new y = %f\n", y);
+                                          //
+                                          printf("move(%lf, %lf, %lf)\n", x, y, z);
+                                        } else {
+                                          printf("-- WARNING: Comando inválido! Está tentar deslocar a nave para for do espaço permitido.\n");
+                                        }
                                       } else {
                                         printf("-- WARNING: Comando inválido! A nave %s encontra-se desligada.\n", id);
                                       }
@@ -255,13 +262,13 @@ ON          [01]
    * "<Set-Ship-->"
    */  
 "<Set-Ship--"       { BEGIN(SET_SHIP_1); return SETSHIP;}
-<SET_SHIP_1>{NR2}   { 
+<SET_SHIP_1>{NR3}   { 
                         BEGIN(SET_SHIP_2);
                         yylval.numDou = atof(yytext);                      
                         return DOUBLE;
                     }
 <SET_SHIP_2,SET_SHIP_3,SET_SHIP_4,SET_SHIP_5>"--"        { ; }
-<SET_SHIP_2>{NR2}   { 
+<SET_SHIP_2>{NR3}   { 
                         BEGIN(SET_SHIP_3);                        
                         yylval.numDou = atof(yytext); 
                         return DOUBLE;
@@ -280,49 +287,38 @@ ON          [01]
                         yylval.numInt = atoi(yytext); 
                         return INT;}
 <SET_SHIP_5>">"     {
-                        printf("    X: %lf, Y: %lf, Z: %lf, DG: %d, ON: %d\n", x, y, z, dg, on);
-
                         BEGIN(INITIAL); 
                         return GREATER;
                     }  
   /*  Parte 3 
    * "<Set-Space-->"
    */  
-"<Set-Space--"       { BEGIN(SET_SPACE_1); }
-<SET_SPACE_1>{NR2}   { 
+"<Set-Space--"       { BEGIN(SET_SPACE_1);  return SETSPACE; }
+<SET_SPACE_1>{NR3}   { 
                         BEGIN(SET_SPACE_2);
                         yylval.numDou = atof(yytext);
                         return DOUBLE;                                                
                     }
 
 <SET_SPACE_2,SET_SPACE_3,SET_SPACE_4>"--"        { ; }
-<SET_SPACE_2>{NR2}   { 
+<SET_SPACE_2>{NR3}   { 
                         BEGIN(SET_SPACE_3);
-                        //yMin = atof(yytext); 
                         yylval.numDou = atof(yytext);                        
                         return DOUBLE;
                     }
-<SET_SPACE_3>{NR2}   { 
+<SET_SPACE_3>{NR3}   { 
                         BEGIN(SET_SPACE_4);
                         yylval.numDou = atof(yytext);                        
-                        //zMin = atof(yytext); 
                         return DOUBLE;
                     }
-<SET_SPACE_4>{NR2}    {
+<SET_SPACE_4>{NR3}    {
                         yylval.numDou = atof(yytext);                        
-                        //yMax = atof(yytext); 
                         return DOUBLE;
                     }
-<SET_SPACE_4>">"     {
-                    printf("    xMin: %lf, yMin: %lf, xMax: %lf, yMax: %lf \n",
-                     xMin, yMin, xMax, yMax);
-                    if (xMax<=xMin || yMax<=yMin) {
-                      printf("-- ERROR: Espaço inválido ou inexistente\n");
-                      exit(-1);
-                    }
-                    BEGIN(INITIAL); 
-                    return SETSPACE;
-            }  
+<SET_SPACE_4>">"     {                    
+                        BEGIN(INITIAL); 
+                        return GREATER;
+                    }  
 {ID}        { 
                 yylval.id=yytext;
                 return ID;
